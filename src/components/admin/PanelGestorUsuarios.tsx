@@ -925,14 +925,14 @@ export default function PanelGestorUsuarios({
                                     ?.privilegeLevel || 1;
                                 const shouldDisable =
                                   loadingUserId === user.id ||
-                                  userPrivilege >= currentUser.level;
+                                  (currentUser.level < 4 && userPrivilege >= currentUser.level);
 
                                 const canShowSelect =
                                   currentUser.level >= 3 && !shouldDisable;
 
                                 if (canShowSelect) {
                                   const optionsToRender = rolesList.filter(
-                                    (r) => r.privilegeLevel < currentUser.level,
+                                    (r) => currentUser.level === 4 ? r.privilegeLevel <= 4 : r.privilegeLevel < currentUser.level,
                                   );
 
                                   return (
@@ -1312,8 +1312,8 @@ export default function PanelGestorUsuarios({
                                 Rol asignado:
                               </span>
                               {canManageAccess &&
-                              (rolesList.find((r) => r.key === user.role)
-                                ?.privilegeLevel || 1) < currentUser.level &&
+                              (currentUser.level === 4 || (rolesList.find((r) => r.key === user.role)
+                                ?.privilegeLevel || 1) < currentUser.level) &&
                               user.id !== currentUser.id ? (
                                 <select
                                   value={user.role}
@@ -1329,7 +1329,7 @@ export default function PanelGestorUsuarios({
                                   {rolesList
                                     .filter(
                                       (r) =>
-                                        r.privilegeLevel < currentUser.level,
+                                        currentUser.level === 4 ? r.privilegeLevel <= 4 : r.privilegeLevel < currentUser.level,
                                     )
                                     .map((r) => (
                                       <option key={r.id} value={r.key}>
