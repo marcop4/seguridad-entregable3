@@ -235,6 +235,10 @@ router.put("/users/:id", requirePrivilege(3), async (req, res) => {
     const targetRes = await pool.query(`SELECT r.privilege_level as level FROM usuarios u JOIN roles r ON u.role_id = r.id WHERE u.id = $1`, [req.params.id]);
     const targetLvl = targetRes.rows[0]?.level || 1;
     
+    if (targetLvl === 5 && userPriv < 5) {
+      return res.status(403).json({ error: "Solo un SuperAdmin (Nivel 5) puede modificar a otro SuperAdmin" });
+    }
+
     if (userPriv === 3 && targetLvl >= 3) {
       return res.status(403).json({ error: "Acceso Denegado" });
     }
@@ -244,6 +248,11 @@ router.put("/users/:id", requirePrivilege(3), async (req, res) => {
     if (role) {
       const roleRes = await pool.query(`SELECT id, privilege_level FROM roles WHERE key = $1`, [role]);
       const newRoleLvl = roleRes.rows[0]?.privilege_level || 1;
+      
+      if (newRoleLvl === 5 && userPriv < 5) {
+         return res.status(403).json({ error: "Escalamiento Denegado: Solo un SuperAdmin puede otorgar el rol de SuperAdmin" });
+      }
+
       if (userPriv === 3 && newRoleLvl >= 3) {
          return res.status(403).json({ error: "Un gerente no puede asignar roles superiores o iguales a Nivel 3" });
       }
