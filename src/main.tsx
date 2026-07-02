@@ -1,0 +1,48 @@
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import App from './App.tsx';
+import { ToastProvider } from './context/ToastContext';
+import './index.css';
+
+import { ErrorBoundary } from './ErrorBoundary.tsx';
+
+// Intercept fetch to automatically append our authentication headers for guarded endpoints
+const originalFetch = window.fetch;
+Object.defineProperty(window, 'fetch', {
+  configurable: true,
+  enumerable: true,
+  writable: true,
+  value: async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+    
+    if (url.startsWith('/api/')) {
+      init = init || {};
+      init.headers = {
+        ...init.headers,
+        'bypass-tunnel-reminder': 'true',
+        'ngrok-skip-browser-warning': 'true'
+      };
+      if (!url.startsWith('/api/auth/')) {
+        init.headers = {
+          ...init.headers,
+          'Authorization': `Bearer ${localStorage.getItem('secure_auth_token') || ''}`
+        };
+      }
+    }
+    
+    return originalFetch(input, init);
+  }
+});
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <ErrorBoundary>
+      <GoogleOAuthProvider clientId={(import.meta as any).env.VITE_GOOGLE_CLIENT_ID || "AUN_NO_CONFIGURADO"}>
+        <ToastProvider>
+          <App />
+        </ToastProvider>
+      </GoogleOAuthProvider>
+    </ErrorBoundary>
+  </StrictMode>,
+);

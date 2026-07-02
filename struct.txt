@@ -1,0 +1,487 @@
+360: <>
+361: {initialLoading ? (
+362: <div className="w-full h-[60vh] flex flex-col items-center j
+363: <div className="relative">
+364: <div className="w-16 h-16 border-4 border-[#141414] rounded-
+365: <div className="w-16 h-16 border-4 border-emerald-500 rounde
+366: <Shield className="w-6 h-6 text-emerald-500 absolute top-1/2
+367: </div>
+368: <div className="text-center space-y-2">
+369: <p className="text-emerald-500 font-black tracking-[0.2em] u
+370: <p className="text-slate-500 font-mono text-[10px]">VERIFICA
+371: </div>
+372: </div>
+373: ) : (
+374: <div className="space-y-8 animate-fade-in" id="users-parent-
+376: {/* PANEL DE TRAZABILIDAD - PERFILES ACTIVOS */}
+377: <div className="mb-8" id="security-dashboard-metrics">
+378: <div className="bg-gradient-to-br from-[#0c1611] to-[#141414
+379: <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-
+381: <div className="flex items-center justify-between mb-6 borde
+382: <h4 className="text-sm font-black text-emerald-400 uppercase
+383: <Activity className="w-5 h-5 animate-pulse" />
+385: </h4>
+386: <div className="flex items-center gap-2 bg-black/40 px-3 py-
+387: <Globe className="w-3.5 h-3.5 text-slate-400" />
+388: <span className="text-[10px] font-mono text-slate-300">Monit
+389: </div>
+390: </div>
+392: <div className="flex-1 overflow-y-auto no-scrollbar max-h-[2
+393: {activeSessions.filter(s => s.userId !== currentUser.id).len
+394: <table className="w-full text-left text-[11px]">
+395: <thead>
+396: <tr className="text-slate-500 uppercase font-bold border-b b
+397: <th className="pb-2 font-mono tracking-widest">Identidad</th
+398: <th className="pb-2 font-mono tracking-widest">Origen (Dispo
+399: <th className="pb-2 text-right font-mono tracking-widest">Co
+400: </tr>
+401: </thead>
+402: <tbody className="divide-y divide-white/5">
+403: {activeSessions.filter(s => s.userId !== currentUser.id).map
+404: <tr key={session.userId} className="group hover:bg-emerald-5
+405: <td className="py-3 px-2">
+406: <div className="flex items-center gap-2">
+407: <div className="relative">
+408: <img src={session.avatarUrl} className="w-7 h-7 rounded-full
+409: <div className="absolute bottom-0 right-0 w-2 h-2 bg-emerald
+410: </div>
+411: <div className="leading-tight">
+412: <p className="font-bold text-slate-200">@{session.username}<
+413: <p className="text-[9px] text-emerald-400 font-mono tracking
+415: </p>
+416: </div>
+417: </div>
+418: </td>
+419: <td className="py-3 px-2 text-slate-400">
+420: <div className="bg-black/30 border border-white/5 rounded-md
+421: <p className="truncate max-w-[180px] flex items-center gap-1
+422: <Monitor className="w-3 h-3 text-slate-500" /> {parseUserAge
+423: </p>
+424: <p className="text-[10px] font-mono text-emerald-200/70 mt-1
+425: <span className="w-1.5 h-1.5 bg-emerald-500/50 rounded-full"
+426: </p>
+427: </div>
+428: </td>
+429: <td className="py-3 px-2 text-right">
+430: {canManageAccess && (currentUser.level > session.level || cu
+431: <button
+436: <ShieldX className="w-3.5 h-3.5" />
+437: <span className="text-[10px] font-bold uppercase tracking-wi
+438: </button>
+439: )}
+440: </td>
+441: </tr>
+442: ))}
+443: </tbody>
+444: </table>
+445: ) : (
+446: <div className="h-full flex flex-col items-center justify-ce
+447: <div className="relative mb-3">
+448: <Monitor className="w-10 h-10 text-slate-600 opacity-50" />
+449: <Search className="w-5 h-5 text-emerald-500 absolute -bottom
+450: </div>
+451: <p className="text-xs text-slate-400 font-mono">No se detect
+452: </div>
+453: )}
+454: </div>
+455: </div>
+456: </div>
+458: <div className="grid grid-cols-1 gap-8" id="users-parent-gri
+460: {!isAuditorOnly && (
+461: <div className="col-span-1 bg-[#141414] rounded-2xl border b
+463: <div className="flex flex-col sm:flex-row sm:items-center sm
+464: <div>
+465: <h3 className="text-sm font-bold text-white flex items-cente
+466: <Users className="w-4 h-4 text-blue-400" /> Gestión de Usuar
+467: </h3>
+468: <p className="text-[10px] text-slate-500 mt-1">Control exhau
+469: </div>
+471: {/* Action buttons + search */}
+472: <div className="flex flex-wrap gap-2 items-center">
+473: {canManageAccess && (
+474: <button
+479: <UserPlus className="w-3.5 h-3.5" />
+481: </button>
+482: )}
+484: <div className="relative">
+485: <Search className="absolute left-3 top-2.5 h-4 w-4 text-slat
+486: <input
+492: />
+493: </div>
+495: <select
+500: <option value="all">Filtro: Todos</option>
+501: <option value="admin">Administrador</option>
+502: <option value="moderator">Moderador</option>
+503: <option value="auditor">Auditor SIEM</option>
+504: <option value="user">Usuario Final</option>
+505: </select>
+506: </div>
+507: </div>
+509: {/* EXPANDABLE NEW USER FORM */}
+510: {showCreateUser && (
+511: <form onSubmit={handleCreateUser} className="bg-[#0A0A0A] bo
+512: <div className="flex justify-between items-center pb-2 borde
+513: <h4 className="text-xs font-bold uppercase tracking-wider te
+514: <UserPlus className="w-4 h-4 text-blue-400" /> Alta de Nuevo
+515: </h4>
+516: <span className="text-[10px] text-slate-500">Privilegios Adm
+517: </div>
+519: <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+520: <div className="space-y-1">
+521: <label className="text-[11px] font-bold text-slate-300 block
+522: <input
+529: />
+530: </div>
+532: <div className="space-y-1">
+533: <label className="text-[11px] font-bold text-slate-300 block
+534: <input
+541: />
+542: </div>
+543: </div>
+545: <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+546: <div className="space-y-1">
+547: <label className="text-[11px] font-bold text-slate-300 block
+548: <div className="flex bg-[#141414] border border-white/10 rou
+549: <input
+556: />
+557: <div className="px-3 py-2 bg-white/5 border-l border-white/5
+559: </div>
+560: </div>
+561: </div>
+563: <div className="space-y-1">
+564: <label className="text-[11px] font-bold text-slate-300 block
+565: <div className="relative">
+566: <input
+573: />
+574: <button
+579: {showNewUserPassword ? <EyeOff className="w-3.5 h-3.5" /> : 
+580: </button>
+581: </div>
+582: </div>
+583: </div>
+585: <div className="space-y-1">
+586: <label className="text-[11px] font-bold text-slate-300 block
+587: {currentUser.level === 3 ? (
+588: <div className="w-full p-2 text-xs rounded-xl border border-
+589: <span>Usuario Final</span>
+590: <Shield className="w-3.5 h-3.5 text-slate-500" />
+591: </div>
+592: ) : (
+593: <select
+598: {rolesList
+601: <option key={r.id} value={r.key}>{r.name}</option>
+602: ))}
+603: </select>
+604: )}
+605: </div>
+607: {createUserError && (
+608: <p className="text-xs text-red-400 font-bold">⚠️ Error: {cre
+609: )}
+610: {createUserSuccess && (
+611: <p className="text-xs text-emerald-400 font-bold">✨ ¡Éxito! 
+612: )}
+614: <div className="flex justify-end gap-2">
+615: <button
+621: </button>
+622: <button
+627: </button>
+628: </div>
+629: </form>
+630: )}
+632: <div className="w-full overflow-visible">
+633: <table className="hidden sm:table w-full text-left text-xs t
+634: <thead>
+635: <tr className="border-b border-white/5 text-[10px] uppercase
+636: <th className="py-3 px-4">Usuario</th>
+637: <th className="py-3 px-4">Rol Asignado</th>
+638: <th className="py-3 px-4">Estado Seguridad</th>
+639: <th className="py-3 px-4">Sesión Navegador</th>
+640: <th className="py-3 px-4 text-right">Acciones Administrativa
+641: </tr>
+642: </thead>
+643: <tbody className="divide-y divide-white/5" id="users-table-b
+644: {filteredUsers.length === 0 ? (
+645: <tr>
+646: <td colSpan={5} className="py-8 text-center text-slate-400">
+648: </td>
+649: </tr>
+650: ) : (
+652: <tr key={user.id} className="hover:bg-white/5 transition-all
+653: <td className="py-4 px-4 flex items-center gap-3">
+654: <img
+659: />
+660: <div>
+661: <div className="flex items-center gap-1.5">
+662: <p className="font-semibold text-white">{user.fullName}</p>
+663: {(user as any).authType === 'google' && (
+664: <span className="p-0.5 bg-white/10 rounded-full text-blue-40
+665: <Chrome className="w-3 h-3" />
+666: </span>
+667: )}
+668: {(user as any).authType === 'local' && (
+669: <span className="p-0.5 bg-white/10 rounded-full text-slate-4
+670: <Key className="w-3 h-3" />
+671: </span>
+672: )}
+673: </div>
+674: <p className="text-[10px] text-slate-500 font-mono">@{user.u
+675: </div>
+676: </td>
+678: <td className="py-4 px-4">
+679: {(() => {
+692: <select
+699: {shouldDisable && !optionsToRender.find(r => r.key === user.
+700: <option value={user.role}>{rolesList.find(r => r.key === use
+701: ) : null}
+702: {optionsToRender.map(r => (
+703: <option key={r.id} value={r.key}>{r.name}</option>
+704: ))}
+705: </select>
+706: );
+707: }
+710: <span className="font-semibold text-slate-400 capitalize fon
+711: {rolesList.find(r => r.key === user.role)?.name || user.role
+712: </span>
+713: );
+714: })()}
+715: </td>
+717: <td className="py-4 px-4">
+718: <div className="flex flex-col gap-1">
+719: {user.isLocked ? (
+720: <div className="space-y-1">
+721: <span className="inline-flex items-center gap-1 text-[10px] 
+722: <ShieldX className="w-3 h-3" /> Bloqueado
+723: </span>
+724: {user.lockedUntil && <LockCountdown lockedUntil={user.locked
+725: </div>
+726: ) : (
+727: <span className="inline-flex items-center gap-1 text-[10px] 
+728: <ShieldCheck className="w-3 h-3" /> Verificado
+729: </span>
+730: )}
+731: {user.failedAttempts > 0 && !user.isLocked && (
+732: <span className="text-[10px] text-amber-400 font-mono flex i
+734: </span>
+735: )}
+736: </div>
+737: </td>
+739: <td className="py-4 px-4 font-mono text-[10px]">
+740: {user.activeSessionId ? (
+741: <div className="text-slate-300 space-y-0.5 bg-emerald-500/5 
+742: <p className="flex items-center gap-1 font-semibold text-eme
+743: <Globe className="w-3 h-3 text-emerald-400" /> ACTIVO
+744: </p>
+745: <p className="text-[9px] text-slate-400" title={user.activeS
+746: <p className="text-[9px] text-slate-500">IP: {user.activeSes
+747: </div>
+748: ) : (
+749: <span className="text-slate-500 italic">Desconectado</span>
+750: )}
+751: </td>
+753: <td className="py-4 px-4 text-right">
+754: <div className="flex items-center justify-end gap-1.5 flex-w
+755: {/* Revoke active session */}
+756: {user.activeSessionId && canManageAccess && (rolesList.find(
+757: <button
+765: <LogOut className="w-3 h-3" /> Revocar
+766: </button>
+767: )}
+771: {/* Toggle locking */}
+772: {canManageAccess && (rolesList.find(r => r.key === user.role
+773: <div className="relative inline-block text-left" id={`lock-s
+774: <button
+779: } else {
+781: }
+782: }}
+788: } cursor-pointer`}
+792: <ShieldX className="w-3.5 h-3.5" />
+793: </button>
+795: {activeLockSelectUserId === user.id && (
+796: <div className="fixed inset-0 z-[100] flex items-center just
+797: <div className="bg-[#141414] border border-white/10 rounded-
+798: <h3 className="text-sm font-bold text-white mb-4">Configurar
+799: <div className="space-y-4">
+800: <div>
+801: <label className="text-[11px] font-bold text-slate-300 block
+802: <div className="flex gap-2">
+803: <input
+810: />
+811: <select
+816: <option value="minutes">Minutos</option>
+817: <option value="hours">Horas</option>
+818: <option value="days">Días</option>
+819: <option value="permanent">Permanente</option>
+820: </select>
+821: </div>
+822: </div>
+823: </div>
+824: <div className="flex justify-end gap-2 mt-6">
+825: <button
+831: </button>
+832: <button
+839: }}
+843: </button>
+844: </div>
+845: </div>
+846: </div>
+847: )}
+848: </div>
+849: )}
+851: {/* Clean fails */}
+852: {(user.failedAttempts > 0 || user.isLocked) && canManageAcce
+853: <button
+860: <Eraser className="w-3.5 h-3.5" />
+861: </button>
+862: )}
+864: {/* Delete account */}
+865: {canManageAccess && (rolesList.find(r => r.key === user.role
+866: <button
+874: <Trash2 className="w-3.5 h-3.5" />
+875: </button>
+876: )}
+877: </div>
+878: </td>
+879: </tr>
+880: ))
+881: )}
+882: </tbody>
+883: </table>
+885: {/* MOBILE ONLY USER CARDS */}
+886: <div className="sm:hidden space-y-4" id="users-cards-mobile"
+887: {filteredUsers.length === 0 ? (
+888: <div className="py-8 text-center text-slate-400 text-xs">
+890: </div>
+891: ) : (
+893: <div key={user.id} className="bg-[#0A0A0A]/80 border border-
+894: <div className="flex items-center gap-3">
+895: <img
+900: />
+901: <div className="grow min-w-0">
+902: <p className="font-bold text-white text-xs truncate">{user.f
+903: <p className="text-[10px] text-slate-500 font-mono truncate"
+904: </div>
+905: <div className="shrink-0 text-right">
+906: {user.isLocked ? (
+907: <div className="flex flex-col items-end gap-0.5">
+908: <span className="text-[9px] font-bold text-red-400 bg-red-40
+909: <ShieldX className="w-2.5 h-2.5" /> Bloqueado
+910: </span>
+911: {user.lockedUntil && <LockCountdown lockedUntil={user.locked
+912: </div>
+913: ) : (
+914: <span className="text-[9px] font-bold text-emerald-400 bg-em
+915: <ShieldCheck className="w-2.5 h-2.5" /> Activo
+916: </span>
+917: )}
+918: {user.failedAttempts > 0 && !user.isLocked && (
+919: <span className="text-[9px] text-amber-400 font-mono flex it
+921: </span>
+922: )}
+923: </div>
+924: </div>
+926: <div className="grid grid-cols-2 gap-2 text-[11px] bg-[#1414
+927: <div>
+928: <span className="text-slate-500 block text-[9px] uppercase">
+929: {canManageAccess && (rolesList.find(r => r.key === user.role
+930: <select
+936: {rolesList
+939: <option key={r.id} value={r.key}>{r.name}</option>
+940: ))}
+941: </select>
+942: ) : (
+943: <span className="font-bold text-slate-300 text-[10px] upperc
+944: {rolesList.find(r => r.key === user.role)?.name || user.role
+945: </span>
+946: )}
+947: </div>
+948: <div>
+949: <span className="text-slate-500 block text-[9px] uppercase">
+950: {user.activeSessionId ? (
+951: <div className="mt-0.5">
+952: <span className="text-emerald-400 font-bold text-[10px] flex
+953: <span className="h-1.5 w-1.5 bg-emerald-500 rounded-full ani
+954: </span>
+955: <span className="text-[8px] text-slate-500 block truncate le
+956: {parseUserAgent(user.activeSessionBrowser)}
+957: <br/>IP: {user.activeSessionIp}
+958: </span>
+959: </div>
+960: ) : (
+961: <span className="text-slate-500 italic text-[10px] mt-0.5 bl
+962: )}
+963: </div>
+964: </div>
+966: <div className="flex items-center justify-end gap-1.5 pt-1 b
+967: {user.activeSessionId && canManageAccess && (rolesList.find(
+968: <button
+973: <LogOut className="w-3 h-3" /> Revocar
+974: </button>
+975: )}
+977: {user.isLocked && canManageAccess && (rolesList.find(r => r.
+978: <button
+984: </button>
+985: )}
+987: {canManageAccess && (rolesList.find(r => r.key === user.role
+988: <div className="relative inline-block text-left" id={`lock-s
+989: <button
+993: } else {
+995: }
+996: }}
+1002: } cursor-pointer`}
+1005: <ShieldX className="w-3.5 h-3.5" />
+1006: </button>
+1008: {activeLockSelectUserId === user.id && (
+1009: <>
+1010: <div className="fixed inset-0 z-[40]" onClick={(e) => { e.st
+1011: <div className="absolute right-0 bottom-full mb-1.5 w-40 rou
+1012: <div className="py-1 text-left">
+1013: <div className="px-3 py-1 font-extrabold text-[8px] text-sla
+1015: </div>
+1016: <button
+1022: </button>
+1023: <button
+1029: </button>
+1030: <button
+1036: </button>
+1037: <button
+1043: </button>
+1044: <button
+1050: </button>
+1051: <button
+1057: </button>
+1058: <button
+1064: </button>
+1065: <div className="border-t border-white/5 my-1" />
+1066: {user.failedAttempts > 0 && (
+1067: <>
+1068: <button
+1075: </button>
+1076: <div className="border-t border-white/5 my-1" />
+1077: </>
+1078: )}
+1079: <button
+1084: </button>
+1085: </div>
+1086: </div>
+1087: </>
+1088: )}
+1089: </div>
+1090: )}
+1092: {canManageAccess && (rolesList.find(r => r.key === user.role
+1093: <button
+1099: <Trash2 className="w-3.5 h-3.5" />
+1100: </button>
+1101: )}
+1102: </div>
+1103: </div>
+1104: ))
+1105: )}
+1106: </div>
+1107: </div>
+1108: )}
+1109: </div>
+1110: </div>
+1111: )}
+1112: </>
+1113: );
+1114: }
