@@ -56,7 +56,7 @@ router.post("/login", async (req, res) => {
       SELECT u.*, r.key as role_key, r.privilege_level as level 
       FROM usuarios u 
       JOIN roles r ON u.role_id = r.id 
-      WHERE u.email = $1 OR u.username = $1
+      WHERE LOWER(u.email) = LOWER($1) OR LOWER(u.username) = LOWER($1)
     `, [loginId]);
 
     const user = result.rows[0];
