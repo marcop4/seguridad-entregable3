@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import SentinelLogo from '../SentinelLogo';
 import { User } from '../../types';
-import { LogOut, BellRing, Users, ShieldAlert, FileSliders, Package, ShoppingCart, MonitorSmartphone, LayoutDashboard, FileText, Settings, Key } from 'lucide-react';
+import { LogOut, BellRing, Users, ShieldAlert, FileSliders, Package, ShoppingCart, MonitorSmartphone, LayoutDashboard, FileText, Settings, Key, Menu, X } from 'lucide-react';
 
 interface ERPLayoutProps {
   currentUser: User | null;
@@ -14,6 +14,7 @@ interface ERPLayoutProps {
 export default function ERPLayout({ currentUser, onLogout, audioEnabled, setAudioEnabled }: ERPLayoutProps) {
   const location = useLocation();
   const mainRef = React.useRef<HTMLElement>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (mainRef.current) {
@@ -26,6 +27,7 @@ export default function ERPLayout({ currentUser, onLogout, audioEnabled, setAudi
     return (
       <Link
         to={to}
+        onClick={() => setMobileMenuOpen(false)}
         className={`flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all border-l-2 ${
           isActive
             ? 'bg-blue-500/10 text-blue-400 border-blue-500'
@@ -40,10 +42,17 @@ export default function ERPLayout({ currentUser, onLogout, audioEnabled, setAudi
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-slate-200 flex flex-col font-sans outline-none">
-      <header className="bg-[#0F0F0F] border-b border-white/10 sticky top-0 z-40 transition-colors shrink-0">
+      <header className="bg-[#0F0F0F] border-b border-white/10 sticky top-0 z-50 transition-colors shrink-0">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/erp/dashboard" className="flex items-center gap-3 group hover:opacity-80 transition-opacity">
-            <div className="bg-white p-1 rounded-lg shadow-sm shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-shadow">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-1.5 -ml-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+            <Link to="/erp/dashboard" className="flex items-center gap-3 group hover:opacity-80 transition-opacity">
+              <div className="bg-white p-1 rounded-lg shadow-sm shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-shadow">
               <img src="/assets/logos/logo-light.png" alt="JANE Isotipo" className="h-8 w-8 object-contain" />
             </div>
             <div className="flex flex-col justify-center translate-y-[1px]">
@@ -53,6 +62,7 @@ export default function ERPLayout({ currentUser, onLogout, audioEnabled, setAudi
               </span>
             </div>
           </Link>
+          </div>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
              <Link to="/" className="px-3 py-1.5 text-xs font-bold bg-slate-800 border border-white/10 text-white rounded-md hover:bg-slate-700 transition">
@@ -99,11 +109,23 @@ export default function ERPLayout({ currentUser, onLogout, audioEnabled, setAudi
             )}
           </div>
         </div>
+          </div>
+        </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden max-w-screen-2xl mx-auto w-full">
+      <div className="flex flex-1 overflow-hidden max-w-screen-2xl mx-auto w-full relative">
+        {/* Mobile Backdrop */}
+        {mobileMenuOpen && (
+          <div 
+            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-30"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+
         {/* Sidebar */}
-        <aside className="w-64 bg-[#0A0A0A] border-r border-white/10 hidden md:flex flex-col py-6 overflow-y-auto shrink-0">
+        <aside className={`w-64 bg-[#0A0A0A] border-r border-white/10 flex-col py-6 overflow-y-auto shrink-0 transition-transform duration-300 md:translate-x-0 z-40 ${
+          mobileMenuOpen ? 'fixed inset-y-0 left-0 top-16 h-[calc(100vh-4rem)] flex translate-x-0' : 'hidden md:flex'
+        }`}>
           <div className="space-y-6">
             
             <div className="space-y-1">
