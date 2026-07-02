@@ -109,8 +109,6 @@ export default function ERPLayout({ currentUser, onLogout, audioEnabled, setAudi
             )}
           </div>
         </div>
-          </div>
-        </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden max-w-screen-2xl mx-auto w-full relative">
